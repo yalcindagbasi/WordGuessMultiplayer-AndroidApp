@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/lbltime2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Oyun ID"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="@+id/txtfield_Time2"
+        app:layout_constraintEnd_toEndOf="@+id/lbllettercount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtfield_Time2" />
+
+    <EditText
+        android:id="@+id/txtfield_Time2"
+        android:layout_width="133dp"
+        android:layout_height="0dp"
+        android:hint="XXXX"
+        android:inputType="numberSigned"
+        android:maxLength="4"
+        android:numeric="signed"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="@+id/txtfield_LetterCount"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/txtfield_LetterCount"
+        app:layout_constraintTop_toBottomOf="@+id/txtfield_Time" />
+
+    <TextView
+        android:id="@+id/lblcreateGame"
+        android:layout_width="324dp"
+        android:layout_height="66dp"
+        android:text="Oyun Oluştur"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="50sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lbllettercount"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:text="Harf Sayısı"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="@+id/txtfield_LetterCount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtfield_LetterCount" />
+
+    <EditText
+        android:id="@+id/txtfield_LetterCount"
+        android:layout_width="133dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:hint="4-9"
+        android:inputType="numberSigned"
+        android:maxLength="1"
+        android:numeric="signed"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:text="5"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lbllettercount"
+        app:layout_constraintTop_toBottomOf="@+id/lblcreateGame" />
+
+    <TextView
+        android:id="@+id/lbltime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Süre"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="@+id/txtfield_Time"
+        app:layout_constraintEnd_toEndOf="@+id/lbllettercount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtfield_Time" />
+
+    <EditText
+        android:id="@+id/txtfield_Time"
+        android:layout_width="133dp"
+        android:layout_height="0dp"
+        android:hint="15-90"
+        android:inputType="numberSigned"
+        android:maxLength="2"
+        android:numeric="signed"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:text="60"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="@+id/txtfield_LetterCount"
+        app:layout_constraintStart_toStartOf="@+id/txtfield_LetterCount"
+        app:layout_constraintTop_toBottomOf="@+id/txtfield_LetterCount" />
+
+    <Button
+        android:id="@+id/btn_CreateGame"
+        android:layout_width="243dp"
+        android:layout_height="75dp"
+        android:text="Oluştur"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        style="buttonba"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_HomePage"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Anasayfa" />
+
+            <Button
+                android:id="@+id/btn_Profile"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Profil" />
+
+            <Button
+                android:id="@+id/btn_Logout"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Hesaptan Çıkış Yap" />
+
+            <Button
+                android:id="@+id/btn_ExitGame"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Çıkış Yap" />
+        </LinearLayout>
+
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
