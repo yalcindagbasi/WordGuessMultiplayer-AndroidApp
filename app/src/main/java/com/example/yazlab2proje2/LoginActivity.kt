@@ -21,11 +21,11 @@ class LoginActivity : AppCompatActivity() {
         buttonLogin.setOnClickListener {
             val username = editTextUsername.text.toString()
             val password = editTextPassword.text.toString()
-
+            runMainMenuActivity(username);
             // Burada kullanıcı adı ve şifre doğrulaması yapabilirsiniz.
             // Örnek olarak, burada sadece bir Toast mesajı gösterilecek.
 
-            if (!username.isNotEmpty() || !password.isNotEmpty()) {
+            /*if (!username.isNotEmpty() || !password.isNotEmpty()) {
                 Toast.makeText(this, "Kullanıcı adı veya şifre boş olamaz", Toast.LENGTH_SHORT).show()
             } else if (loginAccount(username,password)) {
                 Toast.makeText(this, "Giriş Başarılı: $username", Toast.LENGTH_SHORT).show()
@@ -35,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
             }
             else{
                 Toast.makeText(this,"Giriş başarısız.",Toast.LENGTH_SHORT).show()
-            }
+            }*/
         }
 
         //KAYIT TUŞU

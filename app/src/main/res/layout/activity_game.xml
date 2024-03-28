@@ -5,24 +5,34 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TableLayout
-        android:id="@+id/tableLayout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/gameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"/>
+
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/guessLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginTop="16dp"
         android:gravity="center">
 
         <EditText
             android:id="@+id/guessInput"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:hint="Tahmininizi Girin"
-            android:layout_weight="1"/>
+            android:hint="Tahmininizi Girin"/>
 
         <Button
             android:id="@+id/guessButton"
