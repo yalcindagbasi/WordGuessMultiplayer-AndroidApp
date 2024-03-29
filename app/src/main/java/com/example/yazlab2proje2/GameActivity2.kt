@@ -1,11 +1,13 @@
 package com.example.yazlab2proje2
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -17,15 +19,19 @@ class GameActivity : AppCompatActivity() {
     private lateinit var kelime: String
     private lateinit var gameLayout: LinearLayout
     private lateinit var guessInput: EditText
+    private lateinit var backButton: Button // Anasayfaya dönmek için buton
+
     private var kutuSayisi: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        kelime = "masa" // Tahmin edilmesi gereken kelime
+        kelime = "ağaç" // Tahmin edilmesi gereken kelime
         gameLayout = findViewById(R.id.gameLayout)
         guessInput = findViewById(R.id.guessInput)
+        backButton = findViewById(R.id.backButton)
+        backButton.setOnClickListener { goToMain() }
         val guessButton: Button = findViewById(R.id.guessButton)
         guessButton.setOnClickListener { tahminEt() }
 
@@ -97,7 +103,13 @@ class GameActivity : AppCompatActivity() {
             guessInput.isEnabled = false // EditText'i devre dışı bırak
             val guessButton: Button = findViewById(R.id.guessButton)
             guessButton.isEnabled = false // Button'u devre dışı bırak
+            backButton.visibility= View.VISIBLE
         }
         guessInput.text.clear()
+    }
+    fun goToMain() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish() // GameActivity'yi kapat
     }
 }

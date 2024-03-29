@@ -18,7 +18,12 @@
             android:gravity="center"/>
 
     </ScrollView>
-
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Anasayfaya Dön"
+        android:visibility="gone" />
     <LinearLayout
         android:id="@+id/guessLayout"
         android:layout_width="match_parent"
