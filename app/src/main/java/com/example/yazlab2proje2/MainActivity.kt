@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var firebaseAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -46,7 +49,8 @@ class MainActivity : AppCompatActivity() {
         //HESAPTAN ÇIKIŞ YAP BUTONU
         val btnSignOut = findViewById<Button>(R.id.btn_Logout)
         btnSignOut.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
             finish()
         }

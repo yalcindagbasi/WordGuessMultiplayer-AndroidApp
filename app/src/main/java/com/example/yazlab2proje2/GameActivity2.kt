@@ -27,7 +27,7 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        kelime = "ağaç" // Tahmin edilmesi gereken kelime
+        kelime = "opera" // Tahmin edilmesi gereken kelime
         gameLayout = findViewById(R.id.gameLayout)
         guessInput = findViewById(R.id.guessInput)
         backButton = findViewById(R.id.backButton)

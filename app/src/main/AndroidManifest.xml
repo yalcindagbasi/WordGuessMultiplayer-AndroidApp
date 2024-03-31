@@ -13,7 +13,7 @@
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
         tools:targetApi="31">
 
-        <activity android:name=".LoginActivity"
+        <activity android:name=".SignInActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
+        <activity android:name=".SignUpActivity" />
         <activity android:name=".CreateGameActivity" />
         <activity android:name=".FindGameActivity" />
         <activity android:name=".GameActivity" />

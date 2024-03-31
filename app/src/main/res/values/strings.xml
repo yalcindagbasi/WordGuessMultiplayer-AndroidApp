@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">yazlab2proje2</string>
+    <string name="email" />
+    <string name="password" />
 </resources>
