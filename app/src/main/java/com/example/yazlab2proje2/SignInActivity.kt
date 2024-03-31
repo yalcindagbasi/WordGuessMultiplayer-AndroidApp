@@ -28,12 +28,18 @@ class SignInActivity : AppCompatActivity() {
         binding.button.setOnClickListener {
             val email = binding.emailEt.text.toString()
             val pass = binding.passET.text.toString()
-
+            //silinecek denemelik kısım
+            val intent = Intent(this, MainActivity::class.java)
+            intent.getStringExtra(email)
+            startActivity(intent)
+            finish()
+            ///
             if (email.isNotEmpty() && pass.isNotEmpty()) {
 
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
                         val intent = Intent(this, MainActivity::class.java)
+                        intent.getStringExtra(email)
                         startActivity(intent)
                     }  else {
                         // Giriş başarısız ise ve bağlantı hatası varsa özel bir hata mesajı göster

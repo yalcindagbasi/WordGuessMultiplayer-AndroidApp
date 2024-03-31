@@ -1,4 +1,5 @@
 package com.example.yazlab2proje2.Models
+import java.util.*
 
 data class Game(
     val gameId: String,
@@ -10,6 +11,8 @@ data class Game(
     val word: String,
     val player1Guesses: List<String>, // Oyuncu 1'in tahminleri
     val player2Guesses: List<String>, // Oyuncu 2'nin tahminleri
-    val winnerId: String? // Oyunun kazananı
+    val winnerId: String?, // Oyunun kazananı
+    val startTime: Date?, // Oyunun başlama zamanı
+    val endTime: Date? // Oyunun bitiş zamanı
 )
 

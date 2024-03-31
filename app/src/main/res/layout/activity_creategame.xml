@@ -6,35 +6,6 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/lbltime2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Oyun ID"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toBottomOf="@+id/txtfield_Time2"
-        app:layout_constraintEnd_toEndOf="@+id/lbllettercount"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txtfield_Time2" />
-
-    <EditText
-        android:id="@+id/txtfield_Time2"
-        android:layout_width="133dp"
-        android:layout_height="0dp"
-        android:hint="XXXX"
-        android:inputType="numberSigned"
-        android:maxLength="4"
-        android:numeric="signed"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textSize="36sp"
-        app:layout_constraintEnd_toEndOf="@+id/txtfield_LetterCount"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/txtfield_LetterCount"
-        app:layout_constraintTop_toBottomOf="@+id/txtfield_Time" />
-
-    <TextView
         android:id="@+id/lblcreateGame"
         android:layout_width="324dp"
         android:layout_height="66dp"

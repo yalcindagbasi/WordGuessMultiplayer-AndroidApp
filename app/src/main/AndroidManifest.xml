@@ -23,7 +23,8 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".CreateGameActivity" />
-        <activity android:name=".FindGameActivity" />
+        <activity android:name=".CreateGameWaitingActivity" />
+        <activity android:name=".JoinGameActivity" />
         <activity android:name=".GameActivity" />
 
     </application>
