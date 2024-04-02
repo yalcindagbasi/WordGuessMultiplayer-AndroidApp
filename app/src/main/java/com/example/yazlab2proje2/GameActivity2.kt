@@ -14,20 +14,27 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.yazlab2proje2.Models.GameModel
 
 class GameActivity : AppCompatActivity() {
     private lateinit var kelime: String
     private lateinit var gameLayout: LinearLayout
     private lateinit var guessInput: EditText
     private lateinit var backButton: Button // Anasayfaya dönmek için buton
-
+    private var gameModel : GameModel? = null
     private var kutuSayisi: Int = 0
+    private var timer : Int =0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+        GameData.gameModel.observe(this){
+            gameModel=it
+        }
+        kelime = "masa"
 
-        kelime = "opera" // Tahmin edilmesi gereken kelime
+
         gameLayout = findViewById(R.id.gameLayout)
         guessInput = findViewById(R.id.guessInput)
         backButton = findViewById(R.id.backButton)
@@ -112,4 +119,5 @@ class GameActivity : AppCompatActivity() {
         startActivity(intent)
         finish() // GameActivity'yi kapat
     }
+
 }

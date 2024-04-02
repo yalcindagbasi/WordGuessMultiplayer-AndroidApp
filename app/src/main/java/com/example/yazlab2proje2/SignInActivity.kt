@@ -29,10 +29,10 @@ class SignInActivity : AppCompatActivity() {
             val email = binding.emailEt.text.toString()
             val pass = binding.passET.text.toString()
             //silinecek denemelik kısım
-            val intent = Intent(this, MainActivity::class.java)
-            intent.getStringExtra(email)
-            startActivity(intent)
-            finish()
+//            val intent = Intent(this, MainActivity::class.java)
+//            intent.getStringExtra(email)
+//            startActivity(intent)
+//            finish()
             ///
             if (email.isNotEmpty() && pass.isNotEmpty()) {
 
