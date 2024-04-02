@@ -4,7 +4,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -27,18 +29,36 @@ class GameActivity : AppCompatActivity() {
     private lateinit var backButton: Button // Anasayfaya dönmek için buton
     private var gameModel : GameModel? = null
     private var kutuSayisi: Int = 0
-    private var timer : Int =0
+    private lateinit var countDownTimer: CountDownTimer
+    private lateinit var timerTextView: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
         val gameId = intent.getStringExtra("GAME_ID")
+        kelime = intent.getStringExtra("WORD").toString()
+        if (gameId != null) {
+            FirebaseFirestore.getInstance().collection("games")
+                .document(gameId)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val gameModel = document.toObject(GameModel::class.java)
+
+                        // Kelimeyi al ve word değişkenine at
+                    }
+                }
+        }
+        timerTextView = findViewById(R.id.timerTextView)
+        val timeLimit = intent.getIntExtra("TIME_LIMIT", 60)
+        startCountDown(timeLimit)
 
         // Oyun durumunu sürekli olarak dinle
+        // Oyun durumunu sürekli olarak dinle
+
         GameData.gameModel.observe(this) { gameModel ->
             this.gameModel = gameModel
-
             // Eğer oyun durumu FINISHED ise, oyunu bitir ve kazananın ismini göster
             if (gameModel.gameState == GameStatus.FINISHED) {
                 endGame(gameModel.winnerId)
@@ -66,7 +86,7 @@ class GameActivity : AppCompatActivity() {
                     }
                 }
         }
-        kelime = "masa"
+
 
 
         gameLayout = findViewById(R.id.gameLayout)
@@ -194,4 +214,24 @@ class GameActivity : AppCompatActivity() {
         val winnerName = if (winnerId == FirebaseAuth.getInstance().currentUser?.uid) "Sen kazandın!" else "Rakip kazandı!"
         Toast.makeText(this, winnerName, Toast.LENGTH_LONG).show()
     }
-}
+    private fun startCountDown(timeLimit: Int) {
+        Log.d("GameActivity", "startCountdown called") // Bu log mesajını ekleyin
+
+        countDownTimer = object : CountDownTimer(timeLimit * 1000L, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val secondsRemaining = millisUntilFinished / 1000
+                timerTextView.text = "$secondsRemaining"
+            }
+
+            override fun onFinish() {
+                // Süre dolduğunda oyunu berabere olarak bitir
+                gameModel?.let {
+                    it.gameState = GameStatus.FINISHED
+                    it.winnerId = "DRAW"
+                    FirebaseFirestore.getInstance().collection("games")
+                        .document(it.gameId)
+                        .set(it)
+                }
+            }
+        }.start()
+    }}

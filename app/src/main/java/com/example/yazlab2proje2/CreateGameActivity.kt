@@ -5,14 +5,10 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.LiveData
 import com.example.yazlab2proje2.Models.GameModel
 import com.example.yazlab2proje2.Models.GameStatus
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 
-import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.*
@@ -24,6 +20,7 @@ public class CreateGameActivity : AppCompatActivity() {
     private lateinit var timeEditText: EditText
 
     private lateinit var firebaseAuth: FirebaseAuth
+    private var kelime: String = ""
 
     private var gameModel : GameModel? = null
 
@@ -86,6 +83,7 @@ public class CreateGameActivity : AppCompatActivity() {
 
         // Oluşturulan oyunu veritabanına kaydet
 
+        kelime = generateRandomWord(letterCount) // Harf sayısına göre rastgele bir kelime
 
         GameData.saveGameModel(
             GameModel(
@@ -93,6 +91,8 @@ public class CreateGameActivity : AppCompatActivity() {
                 player1Id = firebaseAuth.currentUser?.uid ?: "", // Oyunu oluşturan kullanıcının UID'si
                 wordLength = letterCount.toInt(),
                 gameState = GameStatus.CREATED, // Oyun henüz başlamadı
+                timeLimit = time, // Kullanıcının girdiği süre
+                word = kelime // Harf sayısına göre rastgele bir kelime
             )
         )
             Firebase.firestore.collection("games")
@@ -102,7 +102,6 @@ public class CreateGameActivity : AppCompatActivity() {
                     val model= it?.toObject(GameModel::class.java)
                     if(model!=null){
                         Toast.makeText(this, "Oyun oluşturuldu", Toast.LENGTH_SHORT).show()
-                        var kelime= "masa"
                         // Oyun ID'sini diğer oyuncuya göndermek için Intent'i ayarla
                         val intent = Intent(this, CreateGameWaitingActivity::class.java)
                         intent.putExtra("GAME_ID", gameId)
@@ -126,5 +125,10 @@ public class CreateGameActivity : AppCompatActivity() {
         val random = Random()
         val gameId = random.nextInt(10000) // 0 ile 9999 arasında rastgele bir sayı oluşturur
         return String.format("%04d", gameId) // 4 haneli olacak şekilde formatlanır
+    }
+    private fun generateRandomWord(letterCount: Int): String {
+        // TODO: Gerçek bir kelime listesi kullanın
+        val words = listOf("apple", "banana", "cherry", "date", "elderberry")
+        return words.filter { it.length == letterCount }.random()
     }
 }

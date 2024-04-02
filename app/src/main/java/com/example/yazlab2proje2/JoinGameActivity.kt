@@ -41,16 +41,28 @@ class JoinGameActivity : AppCompatActivity() {
                     if (gameState == "JOINED") {
                         // Oyun başladığında oyuna geç
 
-                        startGame()
+                        val kelime = snapshot.getString("word")
+                        val timelimit = snapshot.getLong("timeLimit")!!.toInt()
+                        if (kelime != null) {
+                            startGame(kelime,timelimit)
+                        }
+                        else {
+                            Toast.makeText(this@JoinGameActivity, "Kelime alınamadı", Toast.LENGTH_SHORT).show()
+                            checkWaitingState()
+
+                        }
                     }
                 }
             }
     }
 
-    private fun startGame() {
+    private fun startGame(kelime : String, timelimit : Int  ) {
         // Oyun başlatma ekranına geç
         val intent = Intent(this, GameActivity::class.java)
         intent.putExtra("GAME_ID", gameId)
+        intent.putExtra("WORD", kelime)
+        intent.putExtra("TIME_LIMIT", timelimit)
+
         startActivity(intent)
         finish()
     }

@@ -12,6 +12,7 @@ class CreateGameWaitingActivity : AppCompatActivity() {
     private lateinit var gameId: String
     private lateinit var firebaseFirestore: FirebaseFirestore
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.create_game_waiting)
@@ -39,18 +40,22 @@ class CreateGameWaitingActivity : AppCompatActivity() {
                 if (snapshot != null && snapshot.exists()) {
                     val gameState = snapshot.getString("gameState")
                     if (gameState == "JOINED") {
-                        // Rakip odaya katıldığında oyuna geç
-                        startGame()
+                        val kelime= snapshot.getString("word").toString()
+                        val timelimit = snapshot.getLong("timeLimit")!!.toInt()
+                        startGame(kelime, timelimit)
                         updateGameState()
                     }
                 }
             }
     }
 
-    private fun startGame() {
+    private fun startGame(kelime : String,timelimit : Int) {
         // Oyun başlatma ekranına geç
         val intent = Intent(this, GameActivity::class.java)
         intent.putExtra("GAME_ID", gameId)
+
+intent.putExtra("TIME_LIMIT",timelimit)
+intent.putExtra("WORD",kelime)
         startActivity(intent)
         finish()
     }
