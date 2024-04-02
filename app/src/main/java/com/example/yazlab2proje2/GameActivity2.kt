@@ -15,6 +15,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.yazlab2proje2.Models.GameModel
+import com.example.yazlab2proje2.Models.GameStatus
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 
 class GameActivity : AppCompatActivity() {
     private lateinit var kelime: String
@@ -29,8 +33,38 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
-        GameData.gameModel.observe(this){
-            gameModel=it
+        val gameId = intent.getStringExtra("GAME_ID")
+
+        // Oyun durumunu sürekli olarak dinle
+        GameData.gameModel.observe(this) { gameModel ->
+            this.gameModel = gameModel
+
+            // Eğer oyun durumu FINISHED ise, oyunu bitir ve kazananın ismini göster
+            if (gameModel.gameState == GameStatus.FINISHED) {
+                endGame(gameModel.winnerId)
+            }
+        }
+        if (gameId != null) {
+            FirebaseFirestore.getInstance().collection("games")
+                .document(gameId)
+                .addSnapshotListener { snapshot, exception ->
+                    if (exception != null) {
+                        // Hata durumunda hata mesajı göster
+                        Toast.makeText(this@GameActivity, "Bir hata oluştu: ${exception.message}", Toast.LENGTH_SHORT).show()
+                        return@addSnapshotListener
+                    }
+
+                    if (snapshot != null && snapshot.exists()) {
+                        val gameState = snapshot.getString("gameState")
+                        if (gameState == "FINISHED") {
+                            // Oyun durumu FINISHED ise, oyunu bitir ve kazananın ismini göster
+                            val winnerId = snapshot.getString("winnerId")
+                            if (winnerId != null) {
+                                endGame(winnerId)
+                            }
+                        }
+                    }
+                }
         }
         kelime = "masa"
 
@@ -106,18 +140,58 @@ class GameActivity : AppCompatActivity() {
         }
         gameLayout.addView(rowLayout)
         if (tahmin.equals(kelime, ignoreCase = true)) {
-            Toast.makeText(this, "Tebrikler! Oyunu kazandınız!", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "Tebrikler! Oyunu kazandınız!", Toast.LENGTH_SHORT).show()
             guessInput.isEnabled = false // EditText'i devre dışı bırak
             val guessButton: Button = findViewById(R.id.guessButton)
             guessButton.isEnabled = false // Button'u devre dışı bırak
             backButton.visibility= View.VISIBLE
+
+            // Oyunu bitir ve kazananın ismini ekranda göster
+            gameModel?.let {
+                it.gameState = GameStatus.FINISHED
+                it.winnerId = if (it.player1Id == FirebaseAuth.getInstance().currentUser?.uid) it.player1Id else it.player2Id
+                FirebaseFirestore.getInstance().collection("games")
+                    .document(it.gameId)
+                    .set(it)
+                    .addOnSuccessListener {
+                        // Güncelleme başarılı ise bir işlem yapma
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this@GameActivity, "Oyun durumu güncellenirken bir hata oluştu: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
         }
         guessInput.text.clear()
+
+        // Tahmin edilen kelimeyi ilgili oyuncunun tahminler dizisine ekle
+        gameModel?.let {
+            val currentPlayer = if (it.player1Id == FirebaseAuth.getInstance().currentUser?.uid) "player1Guesses" else "player2Guesses"
+            FirebaseFirestore.getInstance().collection("games")
+                .document(it.gameId)
+                .update(currentPlayer, FieldValue.arrayUnion(tahmin))
+                .addOnSuccessListener {
+                    // Güncelleme başarılı ise bir işlem yapma
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this@GameActivity, "Tahminler güncellenirken bir hata oluştu: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
     }
     fun goToMain() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish() // GameActivity'yi kapat
     }
+    // Oyunu bitirme ve kazananın ismini gösterme işlemlerini gerçekleştiren metot
+    private fun endGame(winnerId: String) {
+        // Tahmin etme işlemini durdur
+        guessInput.isEnabled = false // EditText'i devre dışı bırak
+        val guessButton: Button = findViewById(R.id.guessButton)
+        guessButton.isEnabled = false // Button'u devre dışı bırak
+        backButton.visibility= View.VISIBLE
 
+        // Kazananın ismini ekranda göster
+        val winnerName = if (winnerId == FirebaseAuth.getInstance().currentUser?.uid) "Sen kazandın!" else "Rakip kazandı!"
+        Toast.makeText(this, winnerName, Toast.LENGTH_LONG).show()
+    }
 }
