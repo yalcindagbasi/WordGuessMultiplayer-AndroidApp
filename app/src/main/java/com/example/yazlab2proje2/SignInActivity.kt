@@ -3,10 +3,13 @@ package com.example.yazlab2proje2
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.yazlab2proje2.databinding.ActivitySignInBinding
 import com.google.firebase.auth.FirebaseAuth
+
+
 
 class SignInActivity : AppCompatActivity() {
 
@@ -28,13 +31,14 @@ class SignInActivity : AppCompatActivity() {
         binding.button.setOnClickListener {
             val email = binding.emailEt.text.toString()
             val pass = binding.passET.text.toString()
+            //val name = findViewById<EditText>(R.id.nameEt).text.toString()
             //silinecek denemelik kısım
 //            val intent = Intent(this, MainActivity::class.java)
 //            intent.getStringExtra(email)
 //            startActivity(intent)
 //            finish()
             ///
-            if (email.isNotEmpty() && pass.isNotEmpty()) {
+            if (email.isNotEmpty() && pass.isNotEmpty() ) {
 
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {

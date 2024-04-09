@@ -2,55 +2,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout3"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <Button
-        android:id="@+id/btn_JoinRooms"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="20dp"
-        android:text="Odalara Katıl"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_JoinGame" />
+    android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textViewWelcome"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Hoş Geldiniz!"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:id="@+id/lblGameTypes"
+        android:layout_width="324dp"
+        android:layout_height="66dp"
+        android:text="Oyun Türü"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="50sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btn_CreateGameActivity"
-        android:layout_width="0dp"
-        android:layout_height="109dp"
-        android:layout_marginTop="56dp"
-        android:text="Oyun Oluştur"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewWelcome" />
-
-    <Button
-        android:id="@+id/btn_JoinGame"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="100dp"
-        android:text="Oyuna Katıl"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_CreateGameActivity" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
@@ -101,20 +66,24 @@
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
-    <EditText
-        android:id="@+id/txtfield_EnterGameID"
+    <Button
+        android:id="@+id/btn_gameType1"
         android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="20dp"
-        android:ems="10"
-        android:hint="Oyun ID Gir"
-        android:inputType="numberSigned"
-        android:textAlignment="center"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_JoinGame"
+        android:layout_height="100dp"
+        android:layout_marginTop="100dp"
+        android:text="Sabit Harf"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblGameTypes" />
 
+    <Button
+        android:id="@+id/btn_gameType2"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="100dp"
+        android:text="Rastgele Harf"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_gameType1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

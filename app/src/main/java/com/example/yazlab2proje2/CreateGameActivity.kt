@@ -2,12 +2,17 @@ package com.example.yazlab2proje2
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.yazlab2proje2.Models.GameModel
 import com.example.yazlab2proje2.Models.GameStatus
+import com.example.yazlab2proje2.Models.UserState
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -35,14 +40,31 @@ public class CreateGameActivity : AppCompatActivity() {
         GameData.fetchGameModel()
         letterCountEditText = findViewById(R.id.txtfield_LetterCount)
         timeEditText = findViewById(R.id.txtfield_Time)
-
+        val letterCount = letterCountEditText.text.toString().toInt()
+        val time : Int = timeEditText.text.toString().toInt()
         firebaseAuth = FirebaseAuth.getInstance()
 
 
         btnCreateGame = findViewById<Button>(R.id.btn_CreateGame)
+        val player2Id = intent.getStringExtra("player2Id")
+        if(player2Id != null){
+            Log.d("player2Id",player2Id?:"")
+            val constraintLayout: ConstraintLayout = findViewById(R.id.layout) // veya uygun konteyneri bul
 
+            // ConstraintLayout içindeki tüm çocuk görünümleri al
+            for (i in 0 until constraintLayout.childCount) {
+                val view = constraintLayout.getChildAt(i)
+                view.visibility = View.INVISIBLE // veya View.GONE
+            }
+            val gameId = generateGameId() // Oyun için benzersiz bir kimlik oluştur
+
+            createGame(letterCount,time,gameId,firebaseAuth.currentUser?.uid ?: "", player2Id?:"")
+
+        }
         btnCreateGame.setOnClickListener{
-            createGame()
+            val gameId = generateGameId() // Oyun için benzersiz bir kimlik oluştur
+
+            createGame(letterCount,time,gameId,firebaseAuth.currentUser?.uid ?: "", "")
         }
 
         //ANASAYFA BUTONU
@@ -67,16 +89,14 @@ public class CreateGameActivity : AppCompatActivity() {
         }
     }
 
-    private fun createGame() {
-        val letterCount = letterCountEditText.text.toString().toInt()
-        val time : Int = timeEditText.text.toString().toInt()
+    private fun createGame(letterCount: Int,time: Int,gameId : String,player1Id: String,player2Id: String ) {
+
         btnCreateGame.setEnabled(false)
         if (letterCount==null || time==null) {
             Toast.makeText(this, "Lütfen tüm alanları doldurun", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val gameId = generateGameId() // Oyun için benzersiz bir kimlik oluştur
 
 
 
@@ -84,17 +104,32 @@ public class CreateGameActivity : AppCompatActivity() {
         // Oluşturulan oyunu veritabanına kaydet
 
         kelime = generateRandomWord(letterCount) // Harf sayısına göre rastgele bir kelime
-
-        GameData.saveGameModel(
-            GameModel(
-                gameId= gameId,
-                player1Id = firebaseAuth.currentUser?.uid ?: "", // Oyunu oluşturan kullanıcının UID'si
-                wordLength = letterCount.toInt(),
-                gameState = GameStatus.CREATED, // Oyun henüz başlamadı
-                timeLimit = time, // Kullanıcının girdiği süre
-                word = kelime // Harf sayısına göre rastgele bir kelime
+        if(player2Id == ""){
+            GameData.saveGameModel(
+                GameModel(
+                    gameId= gameId,
+                    player1Id = firebaseAuth.currentUser?.uid ?: "", // Oyunu oluşturan kullanıcının UID'si
+                    wordLength = letterCount.toInt(),
+                    gameState = GameStatus.CREATED, // Oyun henüz başlamadı
+                    timeLimit = time, // Kullanıcının girdiği süre
+                    word = kelime // Harf sayısına göre rastgele bir kelime
+                )
             )
-        )
+        }else{
+            GameData.saveGameModel(
+                GameModel(
+                    gameId= gameId,
+                    player1Id = firebaseAuth.currentUser?.uid ?: "", // Oyunu oluşturan kullanıcının UID'si
+                    player2Id = player2Id,
+                    wordLength = letterCount.toInt(),
+                    gameState = GameStatus.CREATED, // Oyun henüz başlamadı
+                    timeLimit = time, // Kullanıcının girdiği süre
+                    word = kelime // Harf sayısına göre rastgele bir kelime
+                )
+            )
+
+        }
+
             Firebase.firestore.collection("games")
                 .document(gameId)
                 .get()
@@ -108,6 +143,18 @@ public class CreateGameActivity : AppCompatActivity() {
                         intent.putExtra("WORD", kelime)
                         intent.putExtra("TIME", time)
                         intent.putExtra("LETTERCOUNT", letterCount)
+                        if(player2Id != ""){
+                            // player2Id'ye sahip kullanıcının veritabanındaki bilgilerini güncelle
+                            FirebaseFirestore.getInstance().collection("users")
+                                .document(player2Id)
+                                .update(mapOf("gameId" to gameId, "state" to UserState.INGAME))
+                                .addOnSuccessListener {
+                                    // Güncelleme başarılı
+                                }
+                                .addOnFailureListener { e ->
+                                    // Güncelleme başarısız
+                                }
+                        }
                         startActivity(intent)
                         finish()
                     }

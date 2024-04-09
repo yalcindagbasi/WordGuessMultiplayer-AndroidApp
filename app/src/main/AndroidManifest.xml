@@ -26,6 +26,9 @@
         <activity android:name=".CreateGameWaitingActivity" />
         <activity android:name=".JoinGameActivity" />
         <activity android:name=".GameActivity" />
+        <activity android:name=".GameTypeActivity" />
+        <activity android:name=".RoomsActivity" />
+        <activity android:name=".RoomActivity" />
 
     </application>
 

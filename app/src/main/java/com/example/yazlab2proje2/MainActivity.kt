@@ -2,14 +2,17 @@ package com.example.yazlab2proje2
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.example.yazlab2proje2.Models.GameModel
 import com.example.yazlab2proje2.Models.GameStatus
+import com.example.yazlab2proje2.Models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -26,9 +29,19 @@ class MainActivity : AppCompatActivity() {
         database = FirebaseDatabase.getInstance().reference
 
         // Kullanıcı adını alarak hoş geldiniz mesajını güncelle
-        val textViewWelcome = findViewById<TextView>(R.id.textViewWelcome)
-        val username = intent.getStringExtra("USERNAME")
-        textViewWelcome.text = "Hoş Geldiniz, $username!"
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("users")
+            .document(userId!!)
+            .get()
+            .addOnSuccessListener { document ->
+                val user = document.toObject(User::class.java)
+                val textViewWelcome = findViewById<TextView>(R.id.textViewWelcome)
+                Log.d("TAG", "username: ${user?.username}")
+                Log.d("TAG", "userid: ${userId}")
+                textViewWelcome.text = "Hoş Geldiniz, ${user?.username}!"
+            }
 
         // OYUN OLUŞTUR BUTONU
         val btncreateGame = findViewById<Button>(R.id.btn_CreateGameActivity)
@@ -47,6 +60,11 @@ class MainActivity : AppCompatActivity() {
         btnHomePage.setOnClickListener {
             // Ana sayfaya geri dön
             finish()
+        }
+        val btnGameTypeRoom = findViewById<Button>(R.id.btn_JoinRooms)
+        btnGameTypeRoom.setOnClickListener {
+            val intent = Intent(this, GameTypeActivity::class.java)
+            startActivity(intent)
         }
 
         // HESAPTAN ÇIKIŞ YAP BUTONU
@@ -81,24 +99,10 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Lütfen bir oyun kimliği girin", Toast.LENGTH_SHORT).show()
             return
         }
+        intent = Intent(this, JoinGameActivity::class.java)
+        intent.putExtra("GAME_ID", gameId)
+        intent.putExtra("player2Id", FirebaseAuth.getInstance().currentUser?.uid)
+        startActivity(intent)
 
-        Firebase.firestore.collection("games")
-            .document(gameId)
-            .get()
-            .addOnSuccessListener {
-                val model= it?.toObject(GameModel::class.java)
-                if(model!=null){
-                    model.gameState=GameStatus.JOINED
-                    model.player2Id = firebaseAuth.currentUser?.uid ?: ""
-                    GameData.saveGameModel(model)
-                    val intent = Intent(this@MainActivity, JoinGameActivity::class.java)
-                    intent.putExtra("GAME_ID", gameId)
-                    startActivity(intent)
-                }
-                else{
-                    Toast.makeText(this@MainActivity, "Belirtilen kimliğe sahip bir oyun bulunamadı", Toast.LENGTH_SHORT).show()
-
-                }
-            }
     }
 }
