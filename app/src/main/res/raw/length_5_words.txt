@@ -44,6 +44,7 @@ Apsis
 Arabi
 Arami
 Arazi
+Araba
 Arızi
 Arife
 Ariya
@@ -121,6 +122,7 @@ Biçem
 Biçim
 Biçiş
 Biçki
+Bıçak
 Biçme
 Bidar
 Bidat
@@ -719,6 +721,7 @@ Hükmi
 İhzar
 İkame
 İkbal
+Balta
 İkdam
 İkici
 İkili
@@ -1210,7 +1213,6 @@ Peçiç
 Pekin
 Pelin
 Pelit
-Penis
 Perki
 Permi
 Peşin

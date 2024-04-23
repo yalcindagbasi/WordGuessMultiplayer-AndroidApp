@@ -189,7 +189,6 @@ Amme
 Amor
 Amut
 Anaç
-Anal
 Anam
 Anat
 Anca
@@ -543,7 +542,6 @@ Cife
 Ciga
 Clia
 Clit
-Cima
 Cins
 Cips
 Ciro
@@ -668,8 +666,6 @@ Dışa
 Diba
 Dide
 Didi
-Dlie
-Dlii
 Dimi
 Dinç
 Dine
@@ -1204,7 +1200,6 @@ Izin
 İbiş
 İbka
 İbla
-İbne
 İbra
 İbre
 İcap
@@ -1993,7 +1988,6 @@ Punt
 Pupa
 Puro
 Pusu
-Puşt
 Puya
 Püre
 Rabb

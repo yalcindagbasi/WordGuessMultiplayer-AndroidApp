@@ -18,7 +18,7 @@ object GameData {
             .set(model)
     }
 
-    fun fetchGameModel() {
+    fun fetchGameModel(gameId : String) {
         gameModel.value?.apply {
             Firebase.firestore.collection("games")
                 .document(gameId)

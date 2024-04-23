@@ -45,7 +45,7 @@ public class CreateGameActivity : AppCompatActivity() {
         GameData.gameModel.observe(this){
             gameModel=it
         }
-        GameData.fetchGameModel()
+
         letterCountEditText = findViewById(R.id.txtfield_LetterCount)
 
 

@@ -73,17 +73,24 @@ class JoinGameActivity : AppCompatActivity() {
                     val gameState = snapshot.getString("gameState")
                     if (gameState == "JOINED") {
                         // Oyun başladığında oyuna geç
+                        val gameModel = snapshot.toObject(GameModel::class.java)
+                if (gameModel!=null) {
+                    GameData.saveGameModel(gameModel)
 
-                        val kelime = snapshot.getString("word")
-                        val timelimit = snapshot.getLong("timeLimit")!!.toInt()
-                        if (kelime != null) {
-                            startGame(kelime,timelimit)
-                        }
-                        else {
-                            Toast.makeText(this@JoinGameActivity, "Kelime alınamadı", Toast.LENGTH_SHORT).show()
-                            checkWaitingState()
+                    val kelime = snapshot.getString("word")
+                    val timelimit = snapshot.getLong("timeLimit")!!.toInt()
+                    if (kelime != null) {
+                        startGame(kelime, timelimit)
+                    } else {
+                        Toast.makeText(
+                            this@JoinGameActivity,
+                            "Kelime alınamadı",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        checkWaitingState()
 
-                        }
+                    }
+                }
                     }
                 }
             }

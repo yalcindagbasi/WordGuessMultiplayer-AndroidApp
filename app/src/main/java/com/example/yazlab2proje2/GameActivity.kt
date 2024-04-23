@@ -22,6 +22,12 @@ import com.example.yazlab2proje2.Models.UserState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import java.io.InputStream
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.net.URL
 
 class GameActivity : AppCompatActivity() {
     private lateinit var kelime: String
@@ -42,7 +48,7 @@ class GameActivity : AppCompatActivity() {
         gameIdlbl.text=gameId
         kelime = intent.getStringExtra("WORD").toString()
         val lblworddebug= findViewById<TextView>(R.id.lblworddebug)
-        lblworddebug.text=kelime
+        //lblworddebug.text=kelime
         Utils.updateUserState(FirebaseAuth.getInstance().currentUser!!.uid, UserState.INGAME)
         if (gameId != null) {
             FirebaseFirestore.getInstance().collection("games")
@@ -51,10 +57,21 @@ class GameActivity : AppCompatActivity() {
                 .addOnSuccessListener { document ->
                     if (document != null) {
                         val gameModel = document.toObject(GameModel::class.java)
-
+                        if (gameModel != null) {
+                            GameData.saveGameModel(gameModel)
+                        }
                         // Kelimeyi al ve word değişkenine at
                     }
                 }
+        }
+        GameData.fetchGameModel(gameId!!)
+        GameData.gameModel.observe(this) { gameModel ->
+            this.gameModel = gameModel
+            // Eğer oyun durumu FINISHED ise, oyunu bitir ve kazananın ismini göster
+            if (gameModel.gameState == GameStatus.FINISHED) {
+                lblworddebug.text=kelime
+                endGame(gameModel.winnerId)
+            }
         }
         timerTextView = findViewById(R.id.timerTextView)
         val timeLimit = intent.getIntExtra("TIME_LIMIT", 60)
@@ -63,13 +80,7 @@ class GameActivity : AppCompatActivity() {
         // Oyun durumunu sürekli olarak dinle
         // Oyun durumunu sürekli olarak dinle
 
-        GameData.gameModel.observe(this) { gameModel ->
-            this.gameModel = gameModel
-            // Eğer oyun durumu FINISHED ise, oyunu bitir ve kazananın ismini göster
-            if (gameModel.gameState == GameStatus.FINISHED) {
-                endGame(gameModel.winnerId)
-            }
-        }
+
         if (gameId != null) {
             FirebaseFirestore.getInstance().collection("games")
                 .document(gameId)
@@ -100,7 +111,32 @@ class GameActivity : AppCompatActivity() {
         backButton = findViewById(R.id.backButton)
         backButton.setOnClickListener { goToMain() }
         val guessButton: Button = findViewById(R.id.guessButton)
-        guessButton.setOnClickListener { tahminEt() }
+        guessButton.setOnClickListener {
+            if(guessInput.text.length!= kelime.length){
+                Toast.makeText(this, "Tahmininiz ${kelime.length} harfli olmalıdır.", Toast.LENGTH_SHORT).show()
+            }
+            /* internetten kelime kontrolü
+            else {
+    GlobalScope.launch {
+        val isWordValid = checkWord(kelime)
+        withContext(Dispatchers.Main) {
+            if (!isWordValid) {
+                Toast.makeText(this@GameActivity, "Tahmininiz sözlükte bulunmayan bir kelime olamaz.", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                tahminEt()
+                }
+        }
+    }
+}
+            */
+            else if (!checkIfWord(kelime)){
+                Toast.makeText(this, "Tahmininiz sözlükte bulunmayan bir kelime olamaz.", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                tahminEt()
+            }
+             }
 
         kutuSayisi = kelime.length
 
@@ -244,6 +280,45 @@ class GameActivity : AppCompatActivity() {
                 }
             }
         }.start()
+    }
+    //lokalden kelime kontrolü
+    private fun checkIfWord(guess :String): Boolean {
+
+        val context = this
+        var inputStream: InputStream
+        when (guess.length) {
+            4 -> {
+                inputStream=context.resources.openRawResource(R.raw.length_4_words)
+            }
+            5 -> {
+                inputStream=context.resources.openRawResource(R.raw.length_5_words)
+            }
+            6 -> {
+                inputStream=context.resources.openRawResource(R.raw.length_6_words)
+            }
+            7 -> {
+                inputStream=context.resources.openRawResource(R.raw.length_7_words)
+            }
+            else -> {
+                return false
+            }
+        }
+
+        val words = inputStream.bufferedReader().use { it.readText() }.split("\n")
+        words.forEach() {
+            if(it.equals(guess,ignoreCase = true)){
+                return true
+            }
+        }
+        return false
+    }
+    //internetten kelime kontrolü
+    suspend fun checkWord(word: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            val url = "https://sozluk.gov.tr/gts_id?id=$word"
+            val bodyText = URL(url).readText()
+            bodyText != """{"error":"Sonuç bulunamadı"}"""
+        }
     }
 
 }
