@@ -8,12 +8,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.yazlab2proje2.Models.GameModel
 import com.example.yazlab2proje2.Models.GameStatus
+import com.example.yazlab2proje2.Models.RoomType
 import com.example.yazlab2proje2.Models.UserState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.math.RoundingMode
 
 class JoinGameActivity : AppCompatActivity() {
 
@@ -21,7 +23,7 @@ class JoinGameActivity : AppCompatActivity() {
     private lateinit var firebaseFirestore: FirebaseFirestore
     private lateinit var firebaseAuth: FirebaseAuth
     private var gameListener: ListenerRegistration? = null // Listener'ı tutacak değişkeni tanımlayın
-
+    private lateinit var gameType : RoomType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +34,13 @@ class JoinGameActivity : AppCompatActivity() {
         val player2Id= intent.getStringExtra("player2Id").toString()
         val lbl_gameID = findViewById<TextView>(R.id.lbl_GameID)
         lbl_gameID.text= gameId
+        val roomTypeExtra = intent.getSerializableExtra("roomType")
+        if (roomTypeExtra != null) {
+            gameType = roomTypeExtra as RoomType
+        }
+        else{
+            gameType= RoomType.type0
+        }
         // Odaya katılma işlemi tamamlandığında bekleyen durumu kontrol et
 
         Firebase.firestore.collection("games")
@@ -76,20 +85,29 @@ class JoinGameActivity : AppCompatActivity() {
                         val gameModel = snapshot.toObject(GameModel::class.java)
                 if (gameModel!=null) {
                     GameData.saveGameModel(gameModel)
+                    gameType= gameModel.gameType
 
-                    val kelime = snapshot.getString("word")
-                    val timelimit = snapshot.getLong("timeLimit")!!.toInt()
-                    if (kelime != null) {
-                        startGame(kelime, timelimit)
-                    } else {
-                        Toast.makeText(
-                            this@JoinGameActivity,
-                            "Kelime alınamadı",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        checkWaitingState()
+                    if(gameType == RoomType.type0){
+                        val kelime = snapshot.getString("player1word")
+                        val timelimit = snapshot.getLong("timeLimit")!!.toInt()
+                        if (kelime != null) {
+                            gameListener?.remove()
+                            startGame(kelime, timelimit)
+                        } else {
+                            Toast.makeText(
+                                this@JoinGameActivity,
+                                "Kelime alınamadı",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            checkWaitingState()
 
+                        }
                     }
+                    else{
+                        gameListener?.remove()
+                        startRoomTypeGame()
+                    }
+
                 }
                     }
                 }
@@ -102,7 +120,16 @@ class JoinGameActivity : AppCompatActivity() {
         intent.putExtra("GAME_ID", gameId)
         intent.putExtra("WORD", kelime)
         intent.putExtra("TIME_LIMIT", timelimit)
-        Log.d("JoinGameActivity", "JoinGameActivity 94 Game ID: $gameId")
+        Log.d("JoinGameActivity", "JoinGameActivity 94 calling GameActivity Game ID: $gameId")
+        startActivity(intent)
+        finish()
+    }
+    private fun startRoomTypeGame(){
+        // Oyun başlatma ekranına geç
+        val intent = Intent(this, PickWordActivity::class.java)
+        intent.putExtra("GAME_ID", gameId)
+        intent.putExtra("gameType",gameType )
+        Log.d("JoinGameActivity", "JoinGameActivity 116 calling PickWordActivity Game ID: $gameId")
         startActivity(intent)
         finish()
     }
@@ -118,5 +145,14 @@ class JoinGameActivity : AppCompatActivity() {
 
         // Son olarak, super.onBackPressed() çağrısını yaparak geri butonunun varsayılan davranışını gerçekleştiririz
         super.onBackPressed()
+    }
+    override fun onResume() {
+        super.onResume()
+
+        if (isTaskRoot) {
+            // Activity zaten çalışıyorsa, yeni bir Activity başlatmak yerine mevcut Activity'yi kullanın
+        } else {
+            // Activity zaten çalışmıyorsa, yeni bir Activity başlatın
+        }
     }
 }

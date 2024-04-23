@@ -29,6 +29,7 @@
         <activity android:name=".GameTypeActivity" />
         <activity android:name=".RoomsActivity" />
         <activity android:name=".RoomActivity" />
+        <activity android:name=".PickWordActivity" />
 
     </application>
 

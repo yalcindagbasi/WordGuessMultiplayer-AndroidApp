@@ -32,7 +32,7 @@ class RoomActivity : AppCompatActivity() {
     private var letterCount = 4
     private var roomListener: ListenerRegistration? = null // Listener'ı tutacak değişkeni tanımlayın
     private var joinGameListener: ListenerRegistration? = null // Listener'ı tutacak değişkeni tanımlayın
-
+    private lateinit var roomType: RoomType
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room)
@@ -40,7 +40,7 @@ class RoomActivity : AppCompatActivity() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         letterCount = intent.getIntExtra("lettercount",4)
         Log.d("TAG", "Gelen Letter count: $letterCount")
-        val roomType = intent.getSerializableExtra("roomType") as RoomType
+        roomType = intent.getSerializableExtra("roomType") as RoomType
 
         Log.d("TAG", "RoomType: $roomType")
         // ANASAYFA BUTONU
@@ -187,8 +187,9 @@ class RoomActivity : AppCompatActivity() {
                         inviteButton.setOnClickListener {
                             // Butona tıklandığında yapılacak işlemler
                             if (inviteButton.text == "Davet Et") {
-                                Log.d("RoomActivity", "${user?.username} adlı kullanıcıya davet gönderildi.")
-                                sendInvite(currentUserId!!, user!!.userId)
+                                inviteButton.isEnabled=false
+                                Log.d("RoomActivity", "${user?.username} adlı kullanıcıya davet gönderiliyor.")
+                                sendInvite(currentUserId!!, user!!.userId,inviteButton)
                             } else {
                                 Log.d("RoomActivity", "${user?.username} adlı kullanıcının daveti kabul edildi.")
                                 inviteButton.isEnabled=false
@@ -223,7 +224,7 @@ class RoomActivity : AppCompatActivity() {
             }
     }
     // A kişisi B kişisine davet gönderdiğinde bu metodu çağır
-    fun sendInvite(fromUserId: String, toUserId: String) {
+    fun sendInvite(fromUserId: String, toUserId: String,inviteButton :Button) {
         // A'nın sentInvites listesine B'yi ekle
 
         db.collection("users")
@@ -235,10 +236,11 @@ class RoomActivity : AppCompatActivity() {
                     .document(toUserId)
                     .update("receivedInvites", FieldValue.arrayUnion(fromUserId))
                     .addOnSuccessListener {
-                        // Davet başarıyla gönderildi
+                        Toast.makeText(this, "Davet gönderildi", Toast.LENGTH_SHORT)
                     }
                     .addOnFailureListener { e ->
-                        // Davet gönderilirken bir hata oluştu
+                        Toast.makeText(this, "Davet gönderilirken bir hata oluştu", Toast.LENGTH_SHORT)
+                        inviteButton.isEnabled=true
                     }
             }
             .addOnFailureListener { e ->
@@ -261,8 +263,9 @@ class RoomActivity : AppCompatActivity() {
                             // Kullanıcı zaten bir oyunda, bu yüzden JoinGameActivity'ye yönlendir
                             val intent = Intent(this, JoinGameActivity::class.java)
                             intent.putExtra("GAME_ID", user.gameId)
-                            Log.d("RoomActivity", "*******RoomActivity 138 Joining game with ID: ${user.gameId}")
+                            Log.d("RoomActivity", "RoomActivity 266 calling JoinGameActivity Game ID: ${user.gameId}")
                             intent.putExtra("player2Id", userId)
+                            intent.putExtra("gameType", roomType)
 
                             finish()
                             startActivity(intent)
@@ -295,9 +298,10 @@ class RoomActivity : AppCompatActivity() {
                         // A ve B'yi yeni bir ekrana yönlendir
 
                         val intent = Intent(this, CreateGameActivity::class.java)
-                        Log.d("RoomActivity", "********RoomActivity 304 Starting game with $fromUserId and $toUserId")
+                        Log.d("RoomActivity", "RoomActivity 300 calling CreateGameActivity game with $fromUserId and $toUserId")
                         intent.putExtra("player2Id", fromUserId)
                         intent.putExtra("lettercount",letterCount.toString())
+                        intent.putExtra("gameType", roomType)
                         finish()
                         startActivity(intent)
 

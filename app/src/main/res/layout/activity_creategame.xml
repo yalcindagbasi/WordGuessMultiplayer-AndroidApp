@@ -111,14 +111,6 @@
                 android:text="Anasayfa" />
 
             <Button
-                android:id="@+id/btn_Profile"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Profil" />
-
-            <Button
                 android:id="@+id/btn_Logout"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="match_parent"

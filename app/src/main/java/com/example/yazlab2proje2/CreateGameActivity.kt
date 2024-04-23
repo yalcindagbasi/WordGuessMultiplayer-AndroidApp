@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.yazlab2proje2.Models.GameModel
 import com.example.yazlab2proje2.Models.GameStatus
+import com.example.yazlab2proje2.Models.RoomType
 import com.example.yazlab2proje2.Models.UserState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -32,12 +33,17 @@ public class CreateGameActivity : AppCompatActivity() {
     private var gameModel : GameModel? = null
 
     lateinit var btnCreateGame : Button
+    private lateinit var curGameType :RoomType
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_creategame)
         firebaseAuth = FirebaseAuth.getInstance()
-
+        val roomTypeExtra = intent.getSerializableExtra("gameType")
+        if (roomTypeExtra != null) {
+            curGameType = roomTypeExtra as RoomType
+        }
         val userId = firebaseAuth.currentUser?.uid
         if (userId != null) {
             Utils.updateUserState(userId, UserState.ONLINE)
@@ -138,7 +144,9 @@ public class CreateGameActivity : AppCompatActivity() {
                     wordLength = letterCount.toInt(),
                     gameState = GameStatus.CREATED, // Oyun henüz başlamadı
                     timeLimit = time, // Kullanıcının girdiği süre
-                    word = kelime // Harf sayısına göre rastgele bir kelime
+                    player1word = kelime, // Harf sayısına göre rastgele bir kelime
+                    player2word = kelime,
+                    gameType= RoomType.type0
                 )
             )
         }else{
@@ -152,7 +160,9 @@ public class CreateGameActivity : AppCompatActivity() {
                     wordLength = letterCount.toInt(),
                     gameState = GameStatus.CREATED, // Oyun henüz başlamadı
                     timeLimit = time, // Kullanıcının girdiği süre
-                    word = kelime // Harf sayısına göre rastgele bir kelime
+                    player1word = "", // Harf sayısına göre rastgele bir kelime
+                    player2word = "",
+                    gameType= curGameType
                 )
             )
 
@@ -168,7 +178,6 @@ public class CreateGameActivity : AppCompatActivity() {
                         // Oyun ID'sini diğer oyuncuya göndermek için Intent'i ayarla
                         val intent = Intent(this, CreateGameWaitingActivity::class.java)
                         intent.putExtra("GAME_ID", gameId)
-                        Log.d("gameId","******CreateGameActivity 154 gameID:"+gameId)
                         intent.putExtra("WORD", kelime)
                         intent.putExtra("TIME", time)
                         intent.putExtra("LETTERCOUNT", letterCount)
@@ -184,6 +193,7 @@ public class CreateGameActivity : AppCompatActivity() {
                                     // Güncelleme başarısız
                                 }
                         }
+                        Log.d("CreateGameActivity","CreateGameActivity 154 calling CreateGameWaitingActivity gameID:"+gameId)
 
                         startActivity(intent)
                         finish()

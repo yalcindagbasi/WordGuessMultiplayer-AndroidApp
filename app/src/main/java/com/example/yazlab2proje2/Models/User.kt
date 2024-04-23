@@ -22,6 +22,7 @@ enum class UserState{
     UNKNOWN
 }
 enum class RoomType{
+                   type0,
     type1length4,
     type1length5,
     type1length6,

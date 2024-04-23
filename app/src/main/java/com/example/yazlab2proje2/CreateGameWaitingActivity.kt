@@ -6,16 +6,20 @@ import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.yazlab2proje2.Models.RoomType
 import com.example.yazlab2proje2.Models.User
 import com.example.yazlab2proje2.Models.UserState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 
 class CreateGameWaitingActivity : AppCompatActivity() {
 
     private lateinit var gameId: String
     private lateinit var firebaseFirestore: FirebaseFirestore
-
+    private var isGameStarted = false
+    private var gameStartListener : ListenerRegistration? = null
+    private lateinit var curGametype : RoomType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,13 +29,14 @@ class CreateGameWaitingActivity : AppCompatActivity() {
         firebaseFirestore = FirebaseFirestore.getInstance()
         val lbl_game_ID = findViewById<TextView>(R.id.lbl_game_ID)
         lbl_game_ID.text = gameId
+
         // Oyun oluşturma işlemi tamamlandığında bekleyen durumu kontrol et
         checkWaitingState()
     }
 
     private fun checkWaitingState() {
         // Belirtilen oyun kimliğine sahip bir oyun var mı kontrol et
-        firebaseFirestore.collection("games")
+        gameStartListener =firebaseFirestore.collection("games")
             .document(gameId)
             .addSnapshotListener { snapshot, exception ->
                 if (exception != null) {
@@ -44,10 +49,22 @@ class CreateGameWaitingActivity : AppCompatActivity() {
                 if (snapshot != null && snapshot.exists()) {
                     val gameState = snapshot.getString("gameState")
                     if (gameState == "JOINED") {
-                        val kelime= snapshot.getString("word").toString()
-                        val timelimit = snapshot.getLong("timeLimit")!!.toInt()
-                        startGame(kelime, timelimit)
-                        updateGameState()
+
+
+                        gameStartListener?.remove()
+                        if(snapshot.get("gameType").toString() == RoomType.type0.toString()){
+                            val kelime= snapshot.getString("player1word").toString()
+                            val timelimit = snapshot.getLong("timeLimit")!!.toInt()
+                            startGame(kelime, timelimit)
+                            updateGameState()
+                        }
+                        else{
+                            curGametype = RoomType.valueOf(snapshot.get("gameType").toString())
+                            startRoomTypeGame()
+                            updateGameState()
+                        }
+
+
                     }
                 }
             }
@@ -55,16 +72,31 @@ class CreateGameWaitingActivity : AppCompatActivity() {
 
     private fun startGame(kelime : String,timelimit : Int) {
         // Oyun başlatma ekranına geç
+        if(!isGameStarted){
+            isGameStarted = true
         val intent = Intent(this, GameActivity::class.java)
         intent.putExtra("GAME_ID", gameId)
 
 intent.putExtra("TIME_LIMIT",timelimit)
 intent.putExtra("WORD",kelime)
 checkUserState(FirebaseAuth.getInstance().currentUser?.uid.toString())
-        Log.d("GameActivity", "CREATEGAMEWAITINGACTIVITY 64 Game ID: $gameId")
+        Log.d("CreateGameActivity", "CreategamewaitingActivity 65 calling GameActivity Game ID: $gameId")
         startActivity(intent)
         finish()
-    }
+    }}
+    private fun startRoomTypeGame(){
+        // Oyun başlatma ekranına geç
+        if(!isGameStarted){
+            isGameStarted = true
+        val intent = Intent(this, PickWordActivity::class.java)
+        intent.putExtra("GAME_ID", gameId)
+            intent.putExtra("gameType",curGametype )
+            checkUserState(FirebaseAuth.getInstance().currentUser?.uid.toString())
+        Log.d("CreateGameActivity", "CreategamewaitingActivity 91 calling PickWordActivity Game ID: $gameId")
+        startActivity(intent)
+        finish()
+    }}
+
 
     private fun updateGameState() {
         // Oyun durumunu "InProgress" olarak güncelle
