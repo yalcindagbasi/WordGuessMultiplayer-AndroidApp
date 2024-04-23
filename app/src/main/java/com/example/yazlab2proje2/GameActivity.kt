@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.yazlab2proje2.Models.GameModel
 import com.example.yazlab2proje2.Models.GameStatus
+import com.example.yazlab2proje2.Models.UserState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -37,7 +38,12 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
         val gameId = intent.getStringExtra("GAME_ID")
+        val gameIdlbl= findViewById<TextView>(R.id.lblgameIDd)
+        gameIdlbl.text=gameId
         kelime = intent.getStringExtra("WORD").toString()
+        val lblworddebug= findViewById<TextView>(R.id.lblworddebug)
+        lblworddebug.text=kelime
+        Utils.updateUserState(FirebaseAuth.getInstance().currentUser!!.uid, UserState.INGAME)
         if (gameId != null) {
             FirebaseFirestore.getInstance().collection("games")
                 .document(gameId)
@@ -96,7 +102,7 @@ class GameActivity : AppCompatActivity() {
         val guessButton: Button = findViewById(R.id.guessButton)
         guessButton.setOnClickListener { tahminEt() }
 
-        kutuSayisi = if (kelime.length > 9) 9 else if (kelime.length < 3) 3 else kelime.length
+        kutuSayisi = kelime.length
 
         kelimeyiGoster()
     }
@@ -212,7 +218,11 @@ class GameActivity : AppCompatActivity() {
 
         // Kazananın ismini ekranda göster
         val winnerName = if (winnerId == FirebaseAuth.getInstance().currentUser?.uid) "Sen kazandın!" else "Rakip kazandı!"
+        stopCountDown()
         Toast.makeText(this, winnerName, Toast.LENGTH_LONG).show()
+    }
+    private fun stopCountDown() {
+        countDownTimer.cancel()
     }
     private fun startCountDown(timeLimit: Int) {
         Log.d("GameActivity", "startCountdown called") // Bu log mesajını ekleyin
@@ -234,4 +244,6 @@ class GameActivity : AppCompatActivity() {
                 }
             }
         }.start()
-    }}
+    }
+
+}

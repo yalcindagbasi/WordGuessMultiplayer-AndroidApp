@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.io.InputStream
 import java.util.*
 
 public class CreateGameActivity : AppCompatActivity() {
@@ -26,22 +27,29 @@ public class CreateGameActivity : AppCompatActivity() {
 
     private lateinit var firebaseAuth: FirebaseAuth
     private var kelime: String = ""
+    private var letterCount: Int = 0
 
     private var gameModel : GameModel? = null
 
     lateinit var btnCreateGame : Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_creategame)
+        firebaseAuth = FirebaseAuth.getInstance()
 
+        val userId = firebaseAuth.currentUser?.uid
+        if (userId != null) {
+            Utils.updateUserState(userId, UserState.ONLINE)
+        }
         GameData.gameModel.observe(this){
             gameModel=it
         }
         GameData.fetchGameModel()
         letterCountEditText = findViewById(R.id.txtfield_LetterCount)
-        timeEditText = findViewById(R.id.txtfield_Time)
-        val letterCount = letterCountEditText.text.toString().toInt()
-        val time : Int = timeEditText.text.toString().toInt()
+
+
+
         firebaseAuth = FirebaseAuth.getInstance()
 
 
@@ -57,13 +65,23 @@ public class CreateGameActivity : AppCompatActivity() {
                 view.visibility = View.INVISIBLE // veya View.GONE
             }
             val gameId = generateGameId() // Oyun için benzersiz bir kimlik oluştur
-
+            timeEditText = findViewById(R.id.txtfield_Time)
+            val time : Int = timeEditText.text.toString().toInt()
+            if(intent.getStringExtra("lettercount")!=null){
+                letterCountEditText.setText(intent.getStringExtra("lettercount"))
+            }
+            letterCount = letterCountEditText.text.toString().toInt()
             createGame(letterCount,time,gameId,firebaseAuth.currentUser?.uid ?: "", player2Id?:"")
 
         }
         btnCreateGame.setOnClickListener{
             val gameId = generateGameId() // Oyun için benzersiz bir kimlik oluştur
-
+            timeEditText = findViewById(R.id.txtfield_Time)
+            val time : Int = timeEditText.text.toString().toInt()
+            if(intent.getStringExtra("lettercount")!=null){
+                letterCountEditText.setText(intent.getStringExtra("lettercount"))
+            }
+            letterCount = letterCountEditText.text.toString().toInt()
             createGame(letterCount,time,gameId,firebaseAuth.currentUser?.uid ?: "", "")
         }
 
@@ -78,14 +96,21 @@ public class CreateGameActivity : AppCompatActivity() {
         btnSignOut.setOnClickListener {
             firebaseAuth.signOut()
             val intent = Intent(this, SignInActivity::class.java)
+            if (userId != null) {
+                Utils.updateUserState(userId, UserState.OFFLINE)
+            }
             startActivity(intent)
             finish()
         }
 
-        //ÇIKIŞ YAP BUTONU
         val buttonLogout = findViewById<Button>(R.id.btn_ExitGame)
         buttonLogout.setOnClickListener {
-            finish()
+            // Uygulamadan çıkış yap
+            if (userId != null) {
+                Utils.updateUserState(userId, UserState.OFFLINE)
+            }
+            finishAffinity()
+
         }
     }
 
@@ -103,8 +128,9 @@ public class CreateGameActivity : AppCompatActivity() {
 
         // Oluşturulan oyunu veritabanına kaydet
 
-        kelime = generateRandomWord(letterCount) // Harf sayısına göre rastgele bir kelime
+
         if(player2Id == ""){
+            kelime = generateRandomWord(letterCount) // Harf sayısına göre rastgele bir kelime
             GameData.saveGameModel(
                 GameModel(
                     gameId= gameId,
@@ -116,6 +142,8 @@ public class CreateGameActivity : AppCompatActivity() {
                 )
             )
         }else{
+            this.letterCount =intent.getStringExtra("lettercount")?.toInt()?:0
+            kelime = generateRandomWord(letterCount)
             GameData.saveGameModel(
                 GameModel(
                     gameId= gameId,
@@ -140,6 +168,7 @@ public class CreateGameActivity : AppCompatActivity() {
                         // Oyun ID'sini diğer oyuncuya göndermek için Intent'i ayarla
                         val intent = Intent(this, CreateGameWaitingActivity::class.java)
                         intent.putExtra("GAME_ID", gameId)
+                        Log.d("gameId","******CreateGameActivity 154 gameID:"+gameId)
                         intent.putExtra("WORD", kelime)
                         intent.putExtra("TIME", time)
                         intent.putExtra("LETTERCOUNT", letterCount)
@@ -155,6 +184,7 @@ public class CreateGameActivity : AppCompatActivity() {
                                     // Güncelleme başarısız
                                 }
                         }
+
                         startActivity(intent)
                         finish()
                     }
@@ -174,8 +204,36 @@ public class CreateGameActivity : AppCompatActivity() {
         return String.format("%04d", gameId) // 4 haneli olacak şekilde formatlanır
     }
     private fun generateRandomWord(letterCount: Int): String {
-        // TODO: Gerçek bir kelime listesi kullanın
-        val words = listOf("apple", "banana", "cherry", "date", "elderberry")
-        return words.filter { it.length == letterCount }.random()
+
+        val context = this
+        var inputStream: InputStream
+        when (letterCount) {
+            4 -> {
+                inputStream=context.resources.openRawResource(R.raw.length_4_words)
+            }
+            5 -> {
+                inputStream=context.resources.openRawResource(R.raw.length_5_words)
+            }
+            6 -> {
+                inputStream=context.resources.openRawResource(R.raw.length_6_words)
+            }
+            7 -> {
+                inputStream=context.resources.openRawResource(R.raw.length_7_words)
+            }
+            else -> {
+                return "Kelime bulunamadı"
+            }
+        }
+
+        val words = inputStream.bufferedReader().use { it.readText() }.split("\n")
+        val random = Random()
+        val word = words[random.nextInt(words.size)].trim()
+        Log.d("harf sayısı",letterCount.toString())
+        Log.d("kelime",word)
+        return if (word.isNotEmpty()) {
+            word
+        } else {
+            "Dosyada kelime bulunamadı"
+        }
     }
 }

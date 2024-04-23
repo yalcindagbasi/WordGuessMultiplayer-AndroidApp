@@ -2,13 +2,16 @@ package com.example.yazlab2proje2
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.yazlab2proje2.Models.GameModel
 import com.example.yazlab2proje2.Models.GameStatus
+import com.example.yazlab2proje2.Models.UserState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -17,6 +20,8 @@ class JoinGameActivity : AppCompatActivity() {
     private lateinit var gameId: String
     private lateinit var firebaseFirestore: FirebaseFirestore
     private lateinit var firebaseAuth: FirebaseAuth
+    private var gameListener: ListenerRegistration? = null // Listener'ı tutacak değişkeni tanımlayın
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +57,9 @@ class JoinGameActivity : AppCompatActivity() {
     }
 
     private fun checkWaitingState() {
+        gameListener?.remove()
         // Belirtilen oyun kimliğine sahip bir oyun var mı kontrol et
-        firebaseFirestore.collection("games")
+        gameListener = firebaseFirestore.collection("games")
             .document(gameId)
             .addSnapshotListener { snapshot, exception ->
                 if (exception != null) {
@@ -89,8 +95,21 @@ class JoinGameActivity : AppCompatActivity() {
         intent.putExtra("GAME_ID", gameId)
         intent.putExtra("WORD", kelime)
         intent.putExtra("TIME_LIMIT", timelimit)
-
+        Log.d("JoinGameActivity", "JoinGameActivity 94 Game ID: $gameId")
         startActivity(intent)
         finish()
+    }
+    override fun onBackPressed() {
+        // Geri butonuna basıldığında yapılacak işlemler
+        gameListener?.remove()
+
+        // Örneğin, kullanıcının durumunu 'OFFLINE' olarak güncelleyebiliriz
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            Utils.updateUserState(userId, UserState.ONLINE)
+        }
+
+        // Son olarak, super.onBackPressed() çağrısını yaparak geri butonunun varsayılan davranışını gerçekleştiririz
+        super.onBackPressed()
     }
 }

@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.example.yazlab2proje2.Models.GameModel
 import com.example.yazlab2proje2.Models.GameStatus
 import com.example.yazlab2proje2.Models.User
+import com.example.yazlab2proje2.Models.UserState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
@@ -31,7 +32,9 @@ class MainActivity : AppCompatActivity() {
         // Kullanıcı adını alarak hoş geldiniz mesajını güncelle
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         val db = FirebaseFirestore.getInstance()
-
+        if (userId != null) {
+            Utils.updateUserState(userId, UserState.ONLINE)
+        }
         db.collection("users")
             .document(userId!!)
             .get()
@@ -41,6 +44,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("TAG", "username: ${user?.username}")
                 Log.d("TAG", "userid: ${userId}")
                 textViewWelcome.text = "Hoş Geldiniz, ${user?.username}!"
+
             }
 
         // OYUN OLUŞTUR BUTONU
@@ -54,18 +58,18 @@ class MainActivity : AppCompatActivity() {
         btnjoingame.setOnClickListener{
             joinGameRoom()
         }
-
+        val btnGameTypeRoom = findViewById<Button>(R.id.btn_JoinRooms)
+        btnGameTypeRoom.setOnClickListener {
+            val intent = Intent(this, GameTypeActivity::class.java)
+            startActivity(intent)
+        }
         // ANASAYFA BUTONU
         val btnHomePage = findViewById<Button>(R.id.btn_HomePage)
         btnHomePage.setOnClickListener {
             // Ana sayfaya geri dön
             finish()
         }
-        val btnGameTypeRoom = findViewById<Button>(R.id.btn_JoinRooms)
-        btnGameTypeRoom.setOnClickListener {
-            val intent = Intent(this, GameTypeActivity::class.java)
-            startActivity(intent)
-        }
+
 
         // HESAPTAN ÇIKIŞ YAP BUTONU
         val btnSignOut = findViewById<Button>(R.id.btn_Logout)
@@ -74,6 +78,7 @@ class MainActivity : AppCompatActivity() {
             firebaseAuth.signOut()
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
+            Utils.updateUserState(userId, UserState.OFFLINE)
             finish()
         }
 
@@ -81,7 +86,9 @@ class MainActivity : AppCompatActivity() {
         val buttonLogout = findViewById<Button>(R.id.btn_ExitGame)
         buttonLogout.setOnClickListener {
             // Uygulamadan çıkış yap
-            finish()
+            Utils.updateUserState(userId, UserState.OFFLINE)
+            finishAffinity()
+
         }
     }
 
@@ -105,4 +112,13 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
 
     }
+    /*override fun onStop() {
+        super.onStop()
+
+        // Kullanıcının UserState'ini OFFLINE olarak güncelle
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            Utils.updateUserState(userId, UserState.OFFLINE)
+        }
+    }*/
 }
