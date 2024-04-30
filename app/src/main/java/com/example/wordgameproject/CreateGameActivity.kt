@@ -1,4 +1,4 @@
-package com.example.yazlab2proje2
+package com.example.wordgameproject
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,10 +8,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.example.yazlab2proje2.Models.GameModel
-import com.example.yazlab2proje2.Models.GameStatus
-import com.example.yazlab2proje2.Models.RoomType
-import com.example.yazlab2proje2.Models.UserState
+import com.example.wordgameproject.Models.GameModel
+import com.example.wordgameproject.Models.GameStatus
+import com.example.wordgameproject.Models.RoomType
+import com.example.wordgameproject.Models.UserState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 

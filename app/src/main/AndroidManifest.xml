@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.yazlab2proje2">
+    package="com.example.wordgameproject">
 
     <application
         android:allowBackup="true"
@@ -13,23 +13,23 @@
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
         tools:targetApi="31">
 
-        <activity android:name=".SignInActivity"
+        <activity android:name="com.example.wordgameproject.SignInActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".CreateGameActivity" />
-        <activity android:name=".CreateGameWaitingActivity" />
-        <activity android:name=".JoinGameActivity" />
-        <activity android:name=".GameActivity" />
-        <activity android:name=".GameTypeActivity" />
-        <activity android:name=".RoomsActivity" />
-        <activity android:name=".RoomActivity" />
-        <activity android:name=".PickWordActivity" />
+        <activity android:name="com.example.wordgameproject.MainActivity" />
+        <activity android:name="com.example.wordgameproject.SignUpActivity" />
+        <activity android:name="com.example.wordgameproject.CreateGameActivity" />
+        <activity android:name="com.example.wordgameproject.CreateGameWaitingActivity" />
+        <activity android:name="com.example.wordgameproject.JoinGameActivity" />
+        <activity android:name="com.example.wordgameproject.GameActivity" />
+        <activity android:name="com.example.wordgameproject.GameTypeActivity" />
+        <activity android:name="com.example.wordgameproject.RoomsActivity" />
+        <activity android:name="com.example.wordgameproject.RoomActivity" />
+        <activity android:name="com.example.wordgameproject.PickWordActivity" />
 
     </application>
 

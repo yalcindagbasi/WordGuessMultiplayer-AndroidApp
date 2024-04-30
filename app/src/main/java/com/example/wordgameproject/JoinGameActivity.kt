@@ -1,4 +1,4 @@
-package com.example.yazlab2proje2
+package com.example.wordgameproject
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,16 +6,15 @@ import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.yazlab2proje2.Models.GameModel
-import com.example.yazlab2proje2.Models.GameStatus
-import com.example.yazlab2proje2.Models.RoomType
-import com.example.yazlab2proje2.Models.UserState
+import com.example.wordgameproject.Models.GameModel
+import com.example.wordgameproject.Models.GameStatus
+import com.example.wordgameproject.Models.RoomType
+import com.example.wordgameproject.Models.UserState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.math.RoundingMode
 
 class JoinGameActivity : AppCompatActivity() {
 

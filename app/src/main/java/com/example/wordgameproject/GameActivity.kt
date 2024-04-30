@@ -1,4 +1,4 @@
-package com.example.yazlab2proje2
+package com.example.wordgameproject
 
 import android.content.Intent
 import android.graphics.Color
@@ -18,9 +18,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.example.yazlab2proje2.Models.GameModel
-import com.example.yazlab2proje2.Models.GameStatus
-import com.example.yazlab2proje2.Models.UserState
+import com.example.wordgameproject.Models.GameModel
+import com.example.wordgameproject.Models.GameStatus
+import com.example.wordgameproject.Models.UserState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore

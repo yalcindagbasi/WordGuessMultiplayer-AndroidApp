@@ -1,7 +1,7 @@
-package com.example.yazlab2proje2
+package com.example.wordgameproject
 
 import android.util.Log
-import com.example.yazlab2proje2.Models.UserState
+import com.example.wordgameproject.Models.UserState
 import com.google.firebase.firestore.FirebaseFirestore
 
 object Utils {

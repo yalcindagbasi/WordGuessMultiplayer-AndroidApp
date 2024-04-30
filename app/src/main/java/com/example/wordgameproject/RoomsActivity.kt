@@ -1,11 +1,11 @@
-package com.example.yazlab2proje2
+package com.example.wordgameproject
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.example.yazlab2proje2.Models.RoomType
-import com.example.yazlab2proje2.Models.UserState
+import com.example.wordgameproject.Models.RoomType
+import com.example.wordgameproject.Models.UserState
 import com.google.firebase.auth.FirebaseAuth
 
 class RoomsActivity : AppCompatActivity(){

@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "yazlab2proje2"
+rootProject.name = "WordGuessMultiplayer-AndroidApp"
 include(":app")
  

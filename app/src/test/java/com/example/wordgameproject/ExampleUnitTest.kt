@@ -1,4 +1,4 @@
-package com.example.yazlab2proje2
+package com.example.wordgameproject
 
 import org.junit.Test
 

@@ -1,12 +1,12 @@
-package com.example.yazlab2proje2
+package com.example.wordgameproject
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.yazlab2proje2.Models.User
-import com.example.yazlab2proje2.databinding.ActivitySignUpBinding
+import com.example.wordgameproject.Models.User
+import com.example.wordgameproject.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Date

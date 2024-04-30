@@ -1,9 +1,8 @@
-package com.example.yazlab2proje2
+package com.example.wordgameproject
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.yazlab2proje2.Models.GameModel
-import com.example.yazlab2proje2.Models.GameStatus
+import com.example.wordgameproject.Models.GameModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 

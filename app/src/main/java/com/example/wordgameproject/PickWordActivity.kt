@@ -1,20 +1,18 @@
-package com.example.yazlab2proje2
+package com.example.wordgameproject
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
-import com.example.yazlab2proje2.Models.GameModel
-import com.example.yazlab2proje2.Models.GameStatus
-import com.example.yazlab2proje2.Models.RoomType
+import com.example.wordgameproject.Models.GameModel
+import com.example.wordgameproject.Models.GameStatus
+import com.example.wordgameproject.Models.RoomType
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration

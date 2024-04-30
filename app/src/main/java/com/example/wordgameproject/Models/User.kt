@@ -1,4 +1,4 @@
-package com.example.yazlab2proje2.Models
+package com.example.wordgameproject.Models
 
 import java.util.Date
 
@@ -7,7 +7,7 @@ data class User(
     val username: String = "",
     val email: String = "",
     val password: String = "",
-    val createdAt: Date = Date(), // or your default date
+    val createdAt: Date = Date(),
     val state : UserState = UserState.UNKNOWN,
     val roomType : RoomType = RoomType.NOT,
     val gameId :String = "",
