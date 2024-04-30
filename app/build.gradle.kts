@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.yazlab2proje2"
+    namespace = "com.example.wordgameproject"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.yazlab2proje2"
+        applicationId = "com.example.wordgameproject"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
